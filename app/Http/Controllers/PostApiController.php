@@ -15,7 +15,10 @@ class PostApiController extends Controller
     public function index()
     {
         // return all posts api
-        return Post::all();
+        // return Post::all();
+
+        $posts = Post::get()->toJson(JSON_PRETTY_PRINT);
+        return response($posts, 200);
     }
 
     /**
@@ -36,20 +39,17 @@ class PostApiController extends Controller
      */
     public function store(Request $request)
     {
-        //create post api
-        // validation 
-        request()->validate([
+       
+       $post = new Post;
+       $post->title = $request->title;
+       $post->content = $request->content;
+       $post->save();
 
-            'title'   => 'required',
-            'content' => 'required'
+    //return json reponse
+        return response()->json([
+            "message" => "post created successfuly"
+        ],201);
 
-        ]);
-
-        return Post::create([
-            // db fields to create posts
-            'title'   => request('title'),
-            'content' => request('content'),
-        ]);
     }
 
     /**
@@ -60,7 +60,17 @@ class PostApiController extends Controller
      */
     public function show($id)
     {
-        //
+        // return a single post from the database
+        if (Post::where('id', $id)->exists()) {
+            $post = Post::where('id', $id)->get()->toJson(JSON_PRETTY_PRINT);
+            return response($post, 200);
+          } else {
+            //   if no post in the database
+            return response()->json([
+              "message" => "Post not found"
+            ], 404);
+          
+       }
     }
 
     /**
@@ -81,24 +91,30 @@ class PostApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Post $post)
+    public function update(Request $request, $id)
     {
-        //validation 
-        request()->validate([
-            'title'   => 'required',
-            'content' => 'required'
-        ]);
-
-        // update post by id
-        $success = $post->update([
-            'title'   => request('title'),   
-            'content' => request('content')
-        ]);
         
-        // return when successful
-        return [
-            'success' => $success
-        ];
+        // check if post exists in the database , 
+        if (Post::where('id', $id)->exists()) {
+            // find post by id
+            $post = Post::find($id);
+            // validation added incase only a single field needs to be updated
+            $post->title = is_null($request->title) ? $post->title : $request->title;
+            $post->content = is_null($request->content) ? $post->content : $request->content;
+            $post->save();
+    
+            // if it exists return 
+            return response()->json([
+                "message" => "Post updated successfully"
+            ], 200);
+            } else {
+                // if not post in the database
+            return response()->json([
+                "message" => "Post not found"
+            ], 404);
+            
+        }
+ 
     }
 
     /**
@@ -107,15 +123,24 @@ class PostApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
-         // delete post
-        $success =  $post->delete();
+        // check if post exists
+        if(Post::where('id', $id)->exists()) {
+            $post = Post::find($id);
+            $post->delete();
+            
+            //if it exists return
+            return response()->json([
+              "message" => "Post successfuly deleted"
+            ], 202);
+          } else {
+            //if post does not exists return
+            return response()->json([
+              "message" => "Post not found"
+            ], 404);
+          }
+        }
 
-        // return success message
-        return [
-            'success' => $success
-        ];
-
-    }
+    
 }

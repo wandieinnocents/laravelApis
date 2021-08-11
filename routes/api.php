@@ -27,8 +27,11 @@ Route::get('/posts',[PostApiController::class ,'index']);
 // create posts api route
 Route::post('/posts',[PostApiController::class ,'store']);
 
+// return single post
+Route::get('/posts/{id}',[PostApiController::class ,'show']);
+
 // update post api //{post} = {id}
-Route::put('/posts/{post}',[PostApiController::class, 'update']);
+Route::put('/posts/{id}',[PostApiController::class, 'update']);
 
 // delete route for posts api
-Route::delete('/posts/{post}',[PostApiController::class , 'destroy']);
+Route::delete('/posts/{id}',[PostApiController::class , 'destroy']);
