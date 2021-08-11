@@ -5,13 +5,9 @@
 a walk through of working with apis in laravel , Test using postman
 
 #retrieving a new product
-GET PRODUCTS - http:127.0.0.1:8000/posts
+GET    - http://127.0.0.1:8000/api/posts/
+GET    - http://127.0.0.1:8000/api/posts/2
+POST   - http://127.0.0.1:8000/api/posts/
+PUT    - http://127.0.0.1:8000/api/posts/2
+DELETE - http://127.0.0.1:8000/api/posts/2
 
-#creating a new product
-POST PRODUCTS - http:127.0.0.1:8000/posts
-
-#update product by id
-PUT PRODUCTS - http:127.0.0.1:8000/posts/1
-
-#delete product by id
-DELETE PRODUCTS - http:127.0.0.1:8000/posts/1
